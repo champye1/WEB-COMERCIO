@@ -6,6 +6,7 @@ export default function Sidebar() {
   const links = [
     { label: '📊 Dashboard', href: '/', icon: '📊' },
     { label: '💳 Transacciones', href: '/transactions', icon: '💳' },
+    { label: '⚙️ Perfil', href: '/profile', icon: '⚙️' },
   ]
 
   return (

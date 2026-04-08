@@ -1,8 +1,11 @@
 import { useAuth } from '@/hooks/useAuth.jsx'
+import { useCurrency } from '@/context/CurrencyContext'
 import { useNavigate } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
   const { user, profile, signOut } = useAuth()
+  const { displayCurrency, changeCurrency } = useCurrency()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -25,6 +28,21 @@ export default function Navbar() {
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email}</p>
         </div>
+
+        <select
+          value={displayCurrency}
+          onChange={(e) => changeCurrency(e.target.value)}
+          className="px-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-900 dark:text-white transition"
+          title="Cambiar moneda"
+        >
+          <option value="CLP">CLP</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="ARS">ARS</option>
+          <option value="BRL">BRL</option>
+        </select>
+
+        <ThemeToggle />
 
         <button
           onClick={handleLogout}

@@ -1,5 +1,6 @@
+import { useCurrency } from '@/context/CurrencyContext'
+
 const formatDate = (date) => new Date(date).toLocaleDateString('es-ES')
-const formatMoney = (amount) => `$${parseFloat(amount).toLocaleString('es-ES', { minimumFractionDigits: 2 })}`
 
 export default function TransactionTable({
   transactions,
@@ -12,6 +13,11 @@ export default function TransactionTable({
   onDelete,
   onExport,
 }) {
+  const { convertAmount, currencySymbol } = useCurrency()
+  const formatMoney = (amount) => {
+    const converted = convertAmount(parseFloat(amount))
+    return `${currencySymbol}${converted.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`
+  }
   const totalPages = Math.ceil(total / pageSize)
 
   if (loading) {

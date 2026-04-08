@@ -40,19 +40,24 @@ export default function CategoryPieChart({ data }) {
   const dataWithTotal = data.map(item => ({ ...item, total }))
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        🥧 Gastos por Categoría
-      </h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 hover:shadow-md transition-shadow">
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          Gastos por Categoría
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Distribución de gastos este mes</p>
+      </div>
+      <div style={{ width: '100%', height: '320px' }}>
+        <ResponsiveContainer width="100%" height={320}>
+          <PieChart>
           <Pie
             data={dataWithTotal}
             cx="50%"
             cy="50%"
             labelLine={false}
             label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            outerRadius={100}
+            outerRadius={110}
+            innerRadius={50}
             fill="#8884d8"
             dataKey="value"
           >
@@ -61,9 +66,10 @@ export default function CategoryPieChart({ data }) {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+          <Legend wrapperStyle={{ paddingTop: '20px' }} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

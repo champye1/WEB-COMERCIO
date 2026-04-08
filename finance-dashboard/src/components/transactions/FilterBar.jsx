@@ -1,22 +1,37 @@
+import { useState, useEffect } from 'react'
+import { useDebounce } from '@/hooks/useDebounce'
+
 export default function FilterBar({ filters, categories, onFilterChange }) {
+  const [localFilters, setLocalFilters] = useState(filters)
+  const debouncedFilters = useDebounce(localFilters, 300)
+
+  // Aplicar filtros cuando cambien después del debounce
+  useEffect(() => {
+    if (JSON.stringify(debouncedFilters) !== JSON.stringify(filters)) {
+      onFilterChange(debouncedFilters)
+    }
+  }, [debouncedFilters, filters, onFilterChange])
+
   const handleDateFromChange = (e) => {
-    onFilterChange({ ...filters, dateFrom: e.target.value || null })
+    setLocalFilters({ ...localFilters, dateFrom: e.target.value || null })
   }
 
   const handleDateToChange = (e) => {
-    onFilterChange({ ...filters, dateTo: e.target.value || null })
+    setLocalFilters({ ...localFilters, dateTo: e.target.value || null })
   }
 
   const handleTypeChange = (e) => {
-    onFilterChange({ ...filters, type: e.target.value })
+    setLocalFilters({ ...localFilters, type: e.target.value })
   }
 
   const handleCategoryChange = (e) => {
-    onFilterChange({ ...filters, categoryId: e.target.value || null })
+    setLocalFilters({ ...localFilters, categoryId: e.target.value || null })
   }
 
   const handleReset = () => {
-    onFilterChange({ dateFrom: null, dateTo: null, type: 'all', categoryId: null })
+    const newFilters = { dateFrom: null, dateTo: null, type: 'all', categoryId: null }
+    setLocalFilters(newFilters)
+    onFilterChange(newFilters)
   }
 
   return (

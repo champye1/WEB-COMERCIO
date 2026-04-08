@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from './useAuth.jsx'
 
@@ -7,12 +7,25 @@ export function useDashboard() {
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const isFetchingRef = useRef(false)
+  const loadingTimeoutRef = useRef(null)
 
   // Fetch últimos 6 meses de transacciones para dashboard
-  const fetchDashboardData = async () => {
-    if (!user) return
+  const fetchDashboardData = useCallback(async () => {
+    if (!user || isFetchingRef.current) return
 
+    isFetchingRef.current = true
     setLoading(true)
+
+    // Timeout máximo de 8 segundos
+    const timeoutId = setTimeout(() => {
+      setLoading(false)
+      isFetchingRef.current = false
+      setError('Tiempo de conexión agotado.')
+      // Resetear error después de 3 segundos
+      setTimeout(() => setError(null), 3000)
+    }, 8000)
+
     try {
       // Obtener fecha de hace 6 meses
       const sixMonthsAgo = new Date()
@@ -26,19 +39,32 @@ export function useDashboard() {
         .gte('date', dateString)
         .order('date', { ascending: true })
 
+      clearTimeout(timeoutId)
+
       if (fetchError) throw fetchError
 
       setTransactions(data || [])
+      setError(null)
     } catch (err) {
+      clearTimeout(timeoutId)
+      console.error('Dashboard fetch error:', err)
       setError(err.message)
     } finally {
       setLoading(false)
+      isFetchingRef.current = false
     }
-  }
+  }, [user])
 
   useEffect(() => {
     if (user) {
       fetchDashboardData()
+    } else {
+      setLoading(false)
+      setTransactions([])
+    }
+
+    return () => {
+      isFetchingRef.current = false
     }
   }, [user])
 

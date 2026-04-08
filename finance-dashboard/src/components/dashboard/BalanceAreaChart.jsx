@@ -39,40 +39,46 @@ export default function BalanceAreaChart({ data }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        📈 Tendencia del Balance
-      </h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 p-8 hover:shadow-md transition-shadow">
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+          Tendencia del Balance
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Evolución de tu balance a lo largo del tiempo</p>
+      </div>
+      <div style={{ width: '100%', height: '340px' }}>
+        <ResponsiveContainer width="100%" height={340}>
+          <AreaChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor={isPositiveTrend ? '#22c55e' : '#ef4444'}
-                stopOpacity={0.8}
+                stopColor={isPositiveTrend ? '#10b981' : '#f87171'}
+                stopOpacity={0.3}
               />
               <stop
                 offset="95%"
-                stopColor={isPositiveTrend ? '#22c55e' : '#ef4444'}
+                stopColor={isPositiveTrend ? '#10b981' : '#f87171'}
                 stopOpacity={0}
               />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis dataKey="month" stroke="#6b7280" />
-          <YAxis stroke="#6b7280" />
+          <CartesianGrid strokeDasharray="4 4" stroke="#e5e7eb" vertical={false} />
+          <XAxis dataKey="month" stroke="#9ca3af" style={{ fontSize: '12px' }} />
+          <YAxis stroke="#9ca3af" style={{ fontSize: '12px' }} />
           <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
             dataKey="balance"
-            stroke={isPositiveTrend ? '#22c55e' : '#ef4444'}
-            strokeWidth={2}
+            stroke={isPositiveTrend ? '#10b981' : '#f87171'}
+            strokeWidth={3}
             fillOpacity={1}
             fill="url(#balanceGradient)"
+            isAnimationActive={true}
           />
-        </AreaChart>
-      </ResponsiveContainer>
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }
