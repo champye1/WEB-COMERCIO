@@ -58,6 +58,30 @@ export function AuthProvider({ children }) {
         },
       },
     })
+
+    if (error) {
+      return { data, error }
+    }
+
+    // Create profile entry after successful signup
+    if (data?.user?.id) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            user_id: data.user.id,
+            full_name: fullName,
+            email: email,
+            created_at: new Date().toISOString(),
+          },
+        ])
+
+      if (profileError) {
+        console.error('Error creating profile:', profileError)
+        // Don't return the profile error as signup was successful
+      }
+    }
+
     return { data, error }
   }
 
